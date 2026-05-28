@@ -5,597 +5,291 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>MyAI</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #212121;
-  --sidebar: #171717;
-  --surface: #2f2f2f;
-  --surface2: #3d3d3d;
-  --border: #3d3d3d;
-  --text: #ececec;
-  --text2: #b4b4b4;
-  --muted: #8e8ea0;
-  --accent: #19c37d;
-  --accent2: #ab68ff;
-  --user-bg: #2f2f2f;
-  --input-bg: #2f2f2f;
-  --code-bg: #1a1a1a;
-  --danger: #ef4444;
-  --warning: #f59e0b;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#212121;--sidebar:#171717;--surface:#2f2f2f;--surface2:#3a3a3a;
+  --border:#3d3d3d;--text:#ececec;--text2:#b4b4b4;--muted:#6e6e80;
+  --accent:#19c37d;--accent2:#ab68ff;--input-bg:#2f2f2f;
+  --code-bg:#1a1a1a;--danger:#ef4444;--warning:#f59e0b;
 }
-
-html, body { height: 100%; overflow: hidden; }
-
-body {
-  font-family: 'Inter', -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 15px;
-  line-height: 1.6;
-}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;}
 
 /* MODAL */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.8);
-  z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-  backdrop-filter: blur(4px);
-}
-.modal-overlay.hidden { display: none; }
-.modal {
-  background: #1e1e2e;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px;
-  max-width: 400px; width: 100%;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-}
-.modal-icon { font-size: 36px; text-align: center; margin-bottom: 12px; }
-.modal h2 { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 6px; color: var(--text); }
-.modal-desc { color: var(--muted); font-size: 13px; text-align: center; line-height: 1.6; margin-bottom: 20px; }
-.modal-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: block; font-family: 'JetBrains Mono', monospace; }
-.modal-input {
-  width: 100%; padding: 11px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px; color: var(--text);
-  background: var(--surface); outline: none;
-  transition: border-color 0.2s; margin-bottom: 14px;
-}
-.modal-input:focus { border-color: var(--accent); }
-.modal-btn {
-  width: 100%; padding: 12px;
-  background: var(--accent); border: none;
-  border-radius: 10px; color: #000;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px; font-weight: 600;
-  cursor: pointer; transition: all 0.15s; margin-bottom: 10px;
-}
-.modal-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-.modal-hint { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.7; }
-.modal-hint a { color: var(--accent); text-decoration: none; }
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);}
+.modal-overlay.hidden{display:none;}
+.modal{background:#1e1e2e;border:1px solid var(--border);border-radius:16px;padding:28px;max-width:400px;width:100%;box-shadow:0 25px 60px rgba(0,0,0,0.6);}
+.modal-icon{font-size:36px;text-align:center;margin-bottom:12px;}
+.modal h2{font-size:20px;font-weight:600;text-align:center;margin-bottom:6px;}
+.modal-desc{color:var(--muted);font-size:13px;text-align:center;line-height:1.6;margin-bottom:20px;}
+.modal-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;display:block;font-family:'JetBrains Mono',monospace;}
+.modal-input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);background:var(--surface);outline:none;transition:border-color 0.2s;margin-bottom:14px;}
+.modal-input:focus{border-color:var(--accent);}
+.modal-btn{width:100%;padding:12px;background:var(--accent);border:none;border-radius:10px;color:#000;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.15s;margin-bottom:10px;}
+.modal-btn:hover{opacity:0.9;}
+.modal-hint{font-size:12px;color:var(--muted);text-align:center;line-height:1.7;}
+.modal-hint a{color:var(--accent);text-decoration:none;}
 
 /* LAYOUT */
-.app { display: flex; height: 100vh; overflow: hidden; }
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* SIDEBAR OVERLAY (mobile) */
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+.sb-overlay.show{display:block;}
 
 /* SIDEBAR */
-.sidebar {
-  width: 260px; flex-shrink: 0;
-  background: var(--sidebar);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  height: 100vh;
+.sidebar{
+  width:260px;flex-shrink:0;background:var(--sidebar);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;height:100vh;
+  transition:transform 0.25s ease;z-index:100;
 }
-.sidebar-top { padding: 16px 12px; border-bottom: 1px solid var(--border); }
-.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.brand-logo {
-  width: 34px; height: 34px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
-}
-.brand-name { font-size: 17px; font-weight: 600; color: var(--text); }
-.new-btn {
-  width: 100%; padding: 9px 14px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 9px; color: var(--text2);
-  font-family: 'Inter', sans-serif; font-size: 13px;
-  cursor: pointer; display: flex; align-items: center; gap: 8px;
-  transition: all 0.15s;
-}
-.new-btn:hover { background: var(--surface2); color: var(--text); }
-.sidebar-label { padding: 10px 14px 4px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-family: 'JetBrains Mono', monospace; }
-.chat-list { flex: 1; overflow-y: auto; padding: 4px 8px; }
-.chat-item { padding: 9px 10px; border-radius: 8px; cursor: pointer; color: var(--text2); font-size: 13px; transition: all 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.chat-item:hover { background: var(--surface); color: var(--text); }
-.chat-item.active { background: var(--surface); color: var(--text); }
-.sidebar-bottom { padding: 12px; border-top: 1px solid var(--border); }
-.settings-btn {
-  width: 100%; padding: 9px 12px;
-  background: transparent; border: 1px solid var(--border);
-  border-radius: 8px; color: var(--muted);
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  cursor: pointer; transition: all 0.15s; text-align: left;
-  display: flex; align-items: center; gap: 8px;
-}
-.settings-btn:hover { border-color: var(--accent); color: var(--accent); }
-.status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.status-dot.on { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse 2s infinite; }
-.status-dot.off { background: var(--danger); }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+.sb-head{padding:14px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:center;gap:9px;}
+.brand-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.brand-name{font-size:16px;font-weight:600;}
+.sb-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;border-radius:6px;line-height:1;transition:color 0.15s;}
+.sb-close:hover{color:var(--text);}
+
+.new-btn{margin:10px 10px 4px;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:9px;color:var(--text2);font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;width:calc(100% - 20px);}
+.new-btn:hover{background:var(--surface2);color:var(--text);}
+
+.sb-section{padding:10px 14px 4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;font-family:'JetBrains Mono',monospace;}
+
+.chat-list{flex:1;overflow-y:auto;padding:4px 8px;}
+.chat-item{padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:13px;transition:all 0.15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.chat-item:hover{background:var(--surface);}
+.chat-item.active{background:var(--surface);color:var(--text);}
+.chat-item-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.del-btn{opacity:0;background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:2px 4px;border-radius:4px;flex-shrink:0;transition:all 0.15s;line-height:1;}
+.chat-item:hover .del-btn{opacity:1;}
+.del-btn:hover{color:var(--danger);background:rgba(239,68,68,0.1);}
+
+.sb-foot{padding:12px;border-top:1px solid var(--border);}
+.status-row{display:flex;align-items:center;gap:8px;padding:6px 4px;margin-bottom:8px;}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sdot.on{background:var(--accent);box-shadow:0 0 6px var(--accent);animation:pulse 2s infinite;}
+.sdot.off{background:var(--danger);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.stxt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
+.cfg-btn{width:100%;padding:8px 12px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all 0.15s;text-align:left;display:flex;align-items:center;gap:8px;}
+.cfg-btn:hover{border-color:var(--accent);color:var(--accent);}
 
 /* MAIN */
-.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 
-/* HEADER */
-.topbar {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--bg); flex-shrink: 0;
-}
-.topbar-left { display: flex; align-items: center; gap: 10px; }
-.menu-btn {
-  display: none; background: none; border: none;
-  color: var(--text2); font-size: 20px; cursor: pointer; padding: 4px;
-}
-.topbar-title { font-size: 15px; font-weight: 600; color: var(--text); }
-.model-tag {
-  padding: 4px 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 100px; font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; color: var(--muted);
-}
+/* TOPBAR */
+.topbar{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);flex-shrink:0;}
+.topbar-l{display:flex;align-items:center;gap:10px;}
+.menu-btn{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px;border-radius:6px;transition:color 0.15s;}
+.menu-btn:hover{color:var(--text);}
+.topbar-title{font-size:15px;font-weight:600;}
+.model-tag{padding:4px 10px;background:var(--surface);border:1px solid var(--border);border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
 
 /* MESSAGES */
-.messages { flex: 1; overflow-y: auto; padding: 28px 0; }
-.msg-wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+.messages{flex:1;overflow-y:auto;padding:28px 0;}
+.mwrap{max-width:760px;margin:0 auto;padding:0 18px;}
+.message{margin-bottom:22px;animation:fi 0.25s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.mhead{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.mav{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:600;}
+.mav.ai{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-size:15px;}
+.mav.user{background:var(--surface2);color:var(--text);}
+.mname{font-size:13px;font-weight:600;color:var(--text2);}
+.mtime{font-size:11px;color:var(--muted);margin-left:4px;font-family:'JetBrains Mono',monospace;}
+.mcont{padding-left:38px;color:var(--text);font-size:15px;line-height:1.75;}
+.mcont p{margin-bottom:12px;}
+.mcont p:last-child{margin-bottom:0;}
+.mcont ul,.mcont ol{padding-left:22px;margin-bottom:12px;}
+.mcont li{margin-bottom:5px;}
+.mcont strong{color:#fff;}
+.mcont a{color:var(--accent);}
+.msg-img{max-width:300px;max-height:220px;border-radius:10px;margin-bottom:10px;border:1px solid var(--border);display:block;}
+.fchip{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);margin-bottom:10px;}
 
-.message { margin-bottom: 24px; animation: fadein 0.25s ease; }
-@keyframes fadein { from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);} }
+/* NOTICES */
+.notice{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:12px;margin-bottom:10px;font-size:14px;line-height:1.6;}
+.notice.warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;}
+.notice.err{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
+.nicon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.rbtn{margin-top:10px;padding:7px 16px;background:var(--accent);border:none;border-radius:8px;color:#000;font-weight:600;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
+.cd{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--warning);}
 
-.msg-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.msg-av {
-  width: 28px; height: 28px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; flex-shrink: 0; font-weight: 600;
-}
-.msg-av.ai { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #000; font-size: 15px; }
-.msg-av.user { background: var(--surface2); color: var(--text); }
-.msg-name { font-size: 13px; font-weight: 600; color: var(--text2); }
-.msg-time { font-size: 11px; color: var(--muted); margin-left: 4px; font-family: 'JetBrains Mono', monospace; }
+/* VOICE */
+.vbub{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;margin-bottom:8px;}
+.vplay{width:28px;height:28px;background:var(--accent);border-radius:50%;border:none;cursor:pointer;color:#000;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.vbars{display:flex;align-items:center;gap:2px;height:20px;}
+.vbar{width:3px;background:var(--accent);border-radius:2px;opacity:0.7;}
+.vdur{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
 
-.msg-content { padding-left: 38px; color: var(--text); font-size: 15px; line-height: 1.75; }
-.msg-content p { margin-bottom: 12px; }
-.msg-content p:last-child { margin-bottom: 0; }
-.msg-content ul, .msg-content ol { padding-left: 22px; margin-bottom: 12px; }
-.msg-content li { margin-bottom: 5px; }
-.msg-content strong { color: #fff; }
-.msg-content em { color: var(--text2); }
-.msg-content a { color: var(--accent); }
+/* ===== CODE BLOCK (mirip Claude) ===== */
+.code-wrap{background:var(--code-bg);border-radius:10px;overflow:hidden;margin:12px 0;border:1px solid var(--border);}
+.code-top{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:#111;border-bottom:1px solid var(--border);}
+.code-info{display:flex;align-items:center;gap:8px;}
+.code-lang{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+.code-fname{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);background:rgba(25,195,125,0.1);padding:2px 8px;border-radius:4px;cursor:pointer;border:1px solid rgba(25,195,125,0.2);transition:all 0.15s;}
+.code-fname:hover{background:rgba(25,195,125,0.2);}
+.code-acts{display:flex;gap:6px;}
+.cbtn{padding:4px 10px;background:var(--surface);border:none;border-radius:5px;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all 0.15s;}
+.cbtn:hover{background:var(--surface2);color:var(--text);}
+.cbtn.dl{background:rgba(25,195,125,0.12);color:var(--accent);}
+.cbtn.dl:hover{background:rgba(25,195,125,0.22);}
+.code-body{padding:16px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;color:#e2e8f0;white-space:pre;}
 
-.msg-img { max-width: 320px; max-height: 240px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); display: block; }
-.file-chip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+/* Collapsed code (click to expand) */
+.code-body.collapsed{max-height:120px;overflow:hidden;position:relative;}
+.code-body.collapsed::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(transparent,var(--code-bg));}
+.code-expand{width:100%;padding:8px;background:#111;border:none;border-top:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:color 0.15s;}
+.code-expand:hover{color:var(--text);}
 
-/* NOTICE */
-.notice { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
-.notice.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
-.notice.err { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
-.notice-ico { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-.retry-btn { margin-top: 10px; padding: 7px 16px; background: var(--accent); border: none; border-radius: 8px; color: #000; font-weight: 600; font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; }
-.cd { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--warning); }
+/* Folder download */
+.folder-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-top:12px;}
+.folder-title{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-weight:600;font-size:14px;}
+.folder-files{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.folder-file{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--code-bg);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.15s;border:1px solid transparent;}
+.folder-file:hover{border-color:var(--accent);color:var(--text);}
+.folder-file-icon{font-size:14px;flex-shrink:0;}
+.folder-dl-btn{width:100%;padding:9px;background:var(--accent);border:none;border-radius:8px;color:#000;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.folder-dl-btn:hover{opacity:0.85;}
 
-/* VOICE BUBBLE */
-.voice-bub { display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; margin-bottom: 8px; }
-.voice-play { width: 28px; height: 28px; background: var(--accent); border-radius: 50%; border: none; cursor: pointer; color: #000; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.voice-bars { display: flex; align-items: center; gap: 2px; height: 20px; }
-.voice-bar { width: 3px; background: var(--accent); border-radius: 2px; opacity: 0.7; }
-.voice-dur { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+/* File viewer modal */
+.fv-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
+.fv-overlay.hidden{display:none;}
+.fv-modal{background:#1a1a2e;border:1px solid var(--border);border-radius:14px;width:100%;max-width:700px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+.fv-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:#111;}
+.fv-fname{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);}
+.fv-actions{display:flex;gap:8px;align-items:center;}
+.fv-btn{padding:5px 12px;background:var(--surface);border:none;border-radius:6px;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all 0.15s;}
+.fv-btn:hover{background:var(--surface2);color:var(--text);}
+.fv-btn.dl{background:rgba(25,195,125,0.15);color:var(--accent);}
+.fv-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1;}
+.fv-close:hover{color:var(--text);}
+.fv-body{overflow-y:auto;padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;color:#e2e8f0;white-space:pre;flex:1;}
 
-/* CODE */
-.code-wrap { background: var(--code-bg); border-radius: 10px; overflow: hidden; margin: 12px 0; border: 1px solid var(--border); }
-.code-top { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: #111; border-bottom: 1px solid var(--border); }
-.code-lang { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.code-acts { display: flex; gap: 6px; }
-.code-btn { padding: 4px 10px; background: var(--surface); border: none; border-radius: 5px; color: var(--text2); font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.15s; }
-.code-btn:hover { background: var(--surface2); color: var(--text); }
-.code-btn.dl { background: rgba(25,195,125,0.15); color: var(--accent); }
-.code-btn.dl:hover { background: rgba(25,195,125,0.25); }
-.code-body { padding: 16px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.65; color: #e2e8f0; white-space: pre; }
-.dl-zip { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 12px; cursor: pointer; transition: all 0.15s; }
-.dl-zip:hover { border-color: var(--accent); background: rgba(25,195,125,0.08); }
-
-/* INLINE CODE */
-.ic { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #a78bfa; }
+/* Inline code */
+.ic{background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#a78bfa;}
 
 /* TYPING */
-.typing-wrap { display: flex; padding-left: 38px; align-items: center; gap: 5px; }
-.td { width: 7px; height: 7px; background: var(--muted); border-radius: 50%; animation: tb 1.2s ease-in-out infinite; }
-.td:nth-child(2){animation-delay:0.2s;} .td:nth-child(3){animation-delay:0.4s;}
-@keyframes tb { 0%,80%,100%{transform:translateY(0);opacity:.3;} 40%{transform:translateY(-7px);opacity:1;} }
+.typing-w{display:flex;padding-left:38px;align-items:center;gap:5px;}
+.td{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:tb 1.2s ease-in-out infinite;}
+.td:nth-child(2){animation-delay:0.2s;}.td:nth-child(3){animation-delay:0.4s;}
+@keyframes tb{0%,80%,100%{transform:translateY(0);opacity:.3;}40%{transform:translateY(-7px);opacity:1;}}
 
 /* WELCOME */
-.welcome { max-width: 560px; margin: 0 auto; padding: 60px 24px 0; text-align: center; }
-.welcome-logo { width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; box-shadow: 0 8px 32px rgba(25,195,125,0.25); }
-.welcome h1 { font-size: 28px; font-weight: 600; margin-bottom: 10px; color: var(--text); }
-.welcome p { color: var(--muted); font-size: 15px; line-height: 1.7; margin-bottom: 24px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.chip { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
-.chip:hover { border-color: var(--accent); color: var(--accent); background: rgba(25,195,125,0.08); }
+.welcome{max-width:560px;margin:0 auto;padding:56px 24px 0;text-align:center;}
+.wlogo{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px;box-shadow:0 8px 32px rgba(25,195,125,0.25);}
+.welcome h1{font-size:27px;font-weight:600;margin-bottom:10px;}
+.welcome p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:22px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.chip{padding:8px 15px;background:var(--surface);border:1px solid var(--border);border-radius:100px;font-size:13px;color:var(--text2);cursor:pointer;transition:all 0.15s;}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(25,195,125,0.08);}
 
-/* INPUT AREA */
-.input-area { padding: 12px 20px 16px; background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0; }
-.attach-prev { max-width: 760px; margin: 0 auto 8px; display: flex; flex-wrap: wrap; gap: 8px; }
-.att-thumb { position: relative; display: inline-flex; }
-.att-thumb img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
-.att-thumb .fp { padding: 7px 11px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.att-rm { position: absolute; top: -5px; right: -5px; width: 17px; height: 17px; background: var(--danger); border-radius: 50%; border: none; cursor: pointer; color: white; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+/* INPUT */
+.input-area{padding:10px 18px 14px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0;}
+.att-prev{max-width:760px;margin:0 auto 8px;display:flex;flex-wrap:wrap;gap:8px;}
+.att-t{position:relative;display:inline-flex;}
+.att-t img{width:54px;height:54px;object-fit:cover;border-radius:8px;border:1px solid var(--border);}
+.att-fp{padding:7px 11px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.att-rm{position:absolute;top:-5px;right:-5px;width:17px;height:17px;background:var(--danger);border-radius:50%;border:none;cursor:pointer;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;}
+.ibox{max-width:760px;margin:0 auto;background:var(--input-bg);border:1px solid var(--border);border-radius:14px;display:flex;align-items:flex-end;gap:6px;padding:10px 12px;transition:border-color 0.2s,box-shadow 0.2s;}
+.ibox:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(25,195,125,0.12);}
+.ia{width:34px;height:34px;background:transparent;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted);transition:all 0.15s;flex-shrink:0;}
+.ia:hover{background:var(--surface2);color:var(--text);}
+.ia.rec{color:var(--danger);animation:prec 1s infinite;}
+@keyframes prec{0%,100%{opacity:1;}50%{opacity:0.3;}}
+#mi{flex:1;background:transparent;border:none;outline:none;font-family:'Inter',sans-serif;font-size:15px;color:var(--text);resize:none;max-height:160px;line-height:1.5;min-height:24px;}
+#mi::placeholder{color:var(--muted);}
+.sbtn{width:34px;height:34px;background:var(--accent);border:none;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;color:#000;font-size:16px;font-weight:700;}
+.sbtn:hover{opacity:0.85;transform:scale(1.05);}
+.sbtn:disabled{opacity:0.3;cursor:not-allowed;transform:none;}
+.hint{text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px;}
 
-.input-box {
-  max-width: 760px; margin: 0 auto;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  display: flex; align-items: flex-end; gap: 6px;
-  padding: 10px 12px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(25,195,125,0.12); }
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:100px;}
 
-.ia { width: 34px; height: 34px; background: transparent; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--muted); transition: all 0.15s; flex-shrink: 0; }
-.ia:hover { background: var(--surface2); color: var(--text); }
-.ia.rec { color: var(--danger); animation: prec 1s infinite; }
-@keyframes prec { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-
-#mi { flex: 1; background: transparent; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--text); resize: none; max-height: 160px; line-height: 1.5; min-height: 24px; }
-#mi::placeholder { color: var(--muted); }
-
-.send-btn { width: 34px; height: 34px; background: var(--accent); border: none; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; color: #000; font-size: 16px; font-weight: 700; }
-.send-btn:hover { opacity: 0.85; transform: scale(1.05); }
-.send-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-
-.hint { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 8px; }
-
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 100px; }
-
-/* MOBILE */
-@media (max-width: 700px) {
-  .sidebar { display: none; position: fixed; z-index: 200; height: 100vh; }
-  .sidebar.open { display: flex; }
-  .menu-btn { display: block; }
-  .msg-wrap { padding: 0 14px; }
+@media(max-width:700px){
+  .sidebar{position:fixed;transform:translateX(-100%);height:100vh;}
+  .sidebar.open{transform:translateX(0);}
 }
 </style>
 </head>
 <body>
 
-<!-- MODAL -->
+<!-- SETUP MODAL -->
 <div class="modal-overlay" id="mo">
   <div class="modal">
     <div class="modal-icon">⚙️</div>
     <h2>Setup MyAI</h2>
     <p class="modal-desc">Masukkan URL backend Vercel dan API key Groq gratis kamu.</p>
     <span class="modal-label">URL Backend Vercel</span>
-    <input class="modal-input" type="text" id="urlInp" placeholder="https://myai-backend-xxx.vercel.app" />
+    <input class="modal-input" type="text" id="urlI" placeholder="https://myai-backend-xxx.vercel.app">
     <span class="modal-label">API Key Groq</span>
-    <input class="modal-input" type="password" id="keyInp" placeholder="gsk_xxxxxxxxxxxxxxxx" />
+    <input class="modal-input" type="password" id="keyI" placeholder="gsk_xxxxxxxxxxxxxxxx">
     <button class="modal-btn" onclick="saveSetup()">✓ Simpan & Mulai</button>
-    <p class="modal-hint">
-      Daftar Groq gratis di <a href="https://console.groq.com" target="_blank">console.groq.com</a><br>
-      URL Vercel ada di dashboard vercel.com
-    </p>
+    <p class="modal-hint">Daftar Groq gratis → <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
   </div>
 </div>
 
+<!-- FILE VIEWER MODAL -->
+<div class="fv-overlay hidden" id="fvo">
+  <div class="fv-modal">
+    <div class="fv-head">
+      <span class="fv-fname" id="fvName">file.js</span>
+      <div class="fv-actions">
+        <button class="fv-btn" onclick="fvCopy()">Salin</button>
+        <button class="fv-btn dl" onclick="fvDl()">⬇ Download</button>
+        <button class="fv-close" onclick="closeFv()">✕</button>
+      </div>
+    </div>
+    <div class="fv-body" id="fvBody"></div>
+  </div>
+</div>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sb-overlay" id="sbo" onclick="closeSidebar()"></div>
+
 <div class="app">
   <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-top">
+  <div class="sidebar" id="sb">
+    <div class="sb-head">
       <div class="brand">
         <div class="brand-logo">✦</div>
         <span class="brand-name">MyAI</span>
       </div>
-      <button class="new-btn" onclick="newChat()">
-        <span>✏️</span> Chat Baru
-      </button>
+      <button class="sb-close" onclick="closeSidebar()">✕</button>
     </div>
-    <div class="sidebar-label">Riwayat</div>
-    <div class="chat-list" id="chatList">
-      <div class="chat-item active">Chat baru</div>
-    </div>
-    <div class="sidebar-bottom">
-      <div style="display:flex;align-items:center;gap:8px;padding:6px 4px;margin-bottom:8px;">
-        <div class="status-dot off" id="sDot"></div>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);" id="sTxt">Belum dikonfigurasi</span>
+    <button class="new-btn" onclick="newChat()">✏️ Chat Baru</button>
+    <div class="sb-section">Riwayat</div>
+    <div class="chat-list" id="cl"></div>
+    <div class="sb-foot">
+      <div class="status-row">
+        <div class="sdot off" id="sdot"></div>
+        <span class="stxt" id="stxt">Belum dikonfigurasi</span>
       </div>
-      <button class="settings-btn" onclick="showModal()">⚙️ Pengaturan</button>
+      <button class="cfg-btn" onclick="showModal()">⚙️ Pengaturan</button>
     </div>
   </div>
 
   <!-- MAIN -->
   <div class="main">
     <div class="topbar">
-      <div class="topbar-left">
-        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-l">
+        <button class="menu-btn" onclick="openSidebar()">☰</button>
         <span class="topbar-title">MyAI</span>
       </div>
       <span class="model-tag">Llama 3.3 · Groq</span>
     </div>
 
     <div class="messages" id="msgs">
-      <div class="msg-wrap" id="ws">
+      <div class="mwrap" id="ws">
         <div class="welcome">
-          <div class="welcome-logo">✦</div>
+          <div class="wlogo">✦</div>
           <h1>Selamat datang!</h1>
           <p>AI cerdas untuk soal sekolah, kuliah, coding, dan apapun yang kamu butuhkan.</p>
           <div class="chips">
             <div class="chip" onclick="useChip(this)">📐 Jelaskan integral step by step</div>
-            <div class="chip" onclick="useChip(this)">💻 Buatkan website keren dan download</div>
-            <div class="chip" onclick="useChip(this)">🎮 Buat game Snake yang bagus</div>
-            <div class="chip" onclick="useChip(this)">🔬 Jelaskan reaksi kimia fotosintesis</div>
-            <div class="chip" onclick="useChip(this)">📊 Buatkan aplikasi kalkulator cantik</div>
-            <div class="chip" onclick="useChip(this)">🌐 Buat landing page modern</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="input-area">
-      <div class="attach-prev" id="ap"></div>
-      <div class="input-box">
-        <button class="ia" onclick="document.getElementById('ii').click()" title="Foto">🖼️</button>
-        <input type="file" id="ii" accept="image/*" multiple style="display:none" onchange="handleImg(this)">
-        <button class="ia" onclick="document.getElementById('fi').click()" title="File">📎</button>
-        <input type="file" id="fi" accept=".txt,.py,.js,.html,.css,.java,.cpp,.c,.json,.csv,.md" multiple style="display:none" onchange="handleFile(this)">
-        <textarea id="mi" placeholder="Tanya apa saja..." rows="1" oninput="ar(this)" onkeydown="hk(event)"></textarea>
-        <button class="ia" id="vb" onclick="toggleVoice()" title="Suara">🎤</button>
-        <button class="send-btn" id="sb" onclick="send()">↑</button>
-      </div>
-      <div class="hint">Enter kirim · Shift+Enter baris baru · 🖼️ · 📎 · 🎤</div>
-    </div>
-  </div>
-</div>
-<audio id="aud" style="display:none"></audio>
-
-<script>
-const SYSTEM = `Kamu adalah MyAI, asisten AI super cerdas berbahasa Indonesia.
-
-ATURAN PENTING:
-1. Jawab soal sekolah/kuliah dengan sangat detail, step by step, dan benar
-2. Saat membuat kode/website/game/aplikasi:
-   - Buat yang SANGAT BAGUS dan MODERN dari segi tampilan
-   - Gunakan desain yang menarik dengan warna-warna bagus, animasi, dan UI yang profesional
-   - Untuk website: gunakan CSS modern, gradient, shadow, animasi
-   - Untuk game: buat grafis yang menarik, UI yang bagus, smooth gameplay
-   - SELALU sertakan dalam code block format: \`\`\`html\\nkode\\n\`\`\`
-3. Jawab dalam Bahasa Indonesia kecuali diminta lain
-4. Ramah, detail, dan helpful`;
-
-let hist=[], loading=false, imgs=[], files=[], mr=null, achunks=[], rec=false, rsecs=0, ri=null, lastMsgs=null, rcd=null;
-
-function getUrl(){return localStorage.getItem('myai_url')||'';}
-function getKey(){return localStorage.getItem('myai_key')||'';}
-
-function saveSetup(){
-  const u=document.getElementById('urlInp').value.trim().replace(/\/$/,'');
-  const k=document.getElementById('keyInp').value.trim();
-  if(!u){alert('Masukkan URL Vercel!');return;}
-  if(!k.startsWith('gsk_')){alert('API key Groq harus diawali gsk_');return;}
-  localStorage.setItem('myai_url',u);
-  localStorage.setItem('myai_key',k);
-  document.getElementById('mo').classList.add('hidden');
-  updStatus();
-}
-function showModal(){
-  const u=getUrl(),k=getKey();
-  if(u)document.getElementById('urlInp').value=u;
-  if(k)document.getElementById('keyInp').value=k;
-  document.getElementById('mo').classList.remove('hidden');
-}
-function updStatus(){
-  const ok=getUrl()&&getKey();
-  document.getElementById('sDot').className='status-dot '+(ok?'on':'off');
-  document.getElementById('sTxt').textContent=ok?'Aktif ✓':'Belum dikonfigurasi';
-}
-window.addEventListener('load',()=>{
-  if(getUrl()&&getKey())document.getElementById('mo').classList.add('hidden');
-  updStatus();
-});
-
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
-function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,160)+'px';}
-function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
-function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function now(){const d=new Date();return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');}
-
-function useChip(el){document.getElementById('mi').value=el.innerText.replace(/^[^\s]+\s/,'');send();}
-
-function handleImg(inp){
-  Array.from(inp.files).forEach(f=>{const r=new FileReader();r.onload=e=>{imgs.push({du:e.target.result,b64:e.target.result.split(',')[1],mt:f.type,name:f.name});rp();};r.readAsDataURL(f);});inp.value='';
-}
-function handleFile(inp){
-  Array.from(inp.files).forEach(f=>{const r=new FileReader();r.onload=e=>{files.push({name:f.name,text:e.target.result});rp();};r.readAsText(f);});inp.value='';
-}
-function rp(){
-  const el=document.getElementById('ap');el.innerHTML='';
-  imgs.forEach((img,i)=>{const d=document.createElement('div');d.className='att-thumb';d.innerHTML=`<img src="${img.du}"><button class="att-rm" onclick="rmi(${i})">×</button>`;el.appendChild(d);});
-  files.forEach((f,i)=>{const d=document.createElement('div');d.className='att-thumb';d.innerHTML=`<div class="fp">📄 ${esc(f.name)}</div><button class="att-rm" onclick="rmf(${i})">×</button>`;el.appendChild(d);});
-}
-function rmi(i){imgs.splice(i,1);rp();}
-function rmf(i){files.splice(i,1);rp();}
-
-async function toggleVoice(){
-  if(!rec){
-    try{
-      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-      mr=new MediaRecorder(stream);achunks=[];rsecs=0;
-      mr.ondataavailable=e=>achunks.push(e.data);
-      mr.onstop=()=>{clearInterval(ri);const blob=new Blob(achunks,{type:'audio/webm'});voiceMsg(URL.createObjectURL(blob),rsecs);stream.getTracks().forEach(t=>t.stop());};
-      mr.start();rec=true;
-      document.getElementById('vb').classList.add('rec');document.getElementById('vb').textContent='⏹️';
-      ri=setInterval(()=>rsecs++,1000);
-    }catch(e){alert('Izin mikrofon diperlukan. Pastikan buka via HTTPS.');}
-  }else{mr.stop();rec=false;document.getElementById('vb').classList.remove('rec');document.getElementById('vb').textContent='🎤';}
-}
-
-function voiceMsg(url,dur){
-  rmWs();
-  const bars=Array.from({length:20},()=>`<div class="voice-bar" style="height:${4+Math.random()*18}px"></div>`).join('');
-  addMsg('user',`<div class="voice-bub"><button class="voice-play" onclick="document.getElementById('aud').src='${url}';document.getElementById('aud').play()">▶</button><div class="voice-bars">${bars}</div><span class="voice-dur">${dur}s</span></div>`);
-  hist.push({role:'user',content:'[Pesan suara dikirim]'});
-  lastMsgs=[...hist];callAPI();
-}
-
-function newChat(){
-  hist=[];imgs=[];files=[];lastMsgs=null;
-  document.getElementById('ap').innerHTML='';
-  document.getElementById('msgs').innerHTML=`<div class="msg-wrap" id="ws"><div class="welcome"><div class="welcome-logo">✦</div><h1>Selamat datang!</h1><p>AI cerdas untuk soal sekolah, kuliah, coding, dan apapun yang kamu butuhkan.</p><div class="chips"><div class="chip" onclick="useChip(this)">📐 Jelaskan integral step by step</div><div class="chip" onclick="useChip(this)">💻 Buatkan website keren dan download</div><div class="chip" onclick="useChip(this)">🎮 Buat game Snake yang bagus</div><div class="chip" onclick="useChip(this)">🔬 Jelaskan reaksi kimia fotosintesis</div><div class="chip" onclick="useChip(this)">📊 Buatkan aplikasi kalkulator cantik</div><div class="chip" onclick="useChip(this)">🌐 Buat landing page modern</div></div></div></div>`;
-  document.querySelectorAll('.chat-item').forEach(i=>i.classList.remove('active'));
-  const h=document.getElementById('chatList');
-  const it=document.createElement('div');it.className='chat-item active';it.textContent='Chat baru';
-  h.insertBefore(it,h.firstChild);
-}
-function rmWs(){const w=document.getElementById('ws');if(w)w.remove();}
-
-function addMsg(role,html){
-  rmWs();
-  const msgs=document.getElementById('msgs');
-  const wrap=document.createElement('div');wrap.className='msg-wrap';
-  const isAI=role==='assistant';
-  const t=now();
-  wrap.innerHTML=`<div class="message"><div class="msg-header"><div class="msg-av ${isAI?'ai':'user'}">${isAI?'✦':'U'}</div><span class="msg-name">${isAI?'MyAI':'Kamu'}</span><span class="msg-time">${t}</span></div><div class="msg-content">${html}</div></div>`;
-  msgs.appendChild(wrap);msgs.scrollTop=msgs.scrollHeight;
-}
-
-function addTyping(){
-  rmWs();
-  const msgs=document.getElementById('msgs');
-  const wrap=document.createElement('div');wrap.className='msg-wrap';wrap.id='ti';
-  wrap.innerHTML=`<div class="message"><div class="msg-header"><div class="msg-av ai">✦</div><span class="msg-name">MyAI</span></div><div class="typing-wrap"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
-  msgs.appendChild(wrap);msgs.scrollTop=msgs.scrollHeight;
-}
-
-function showWarn(secs){
-  document.getElementById('ti')?.remove();
-  const msgs=document.getElementById('msgs');
-  const wrap=document.createElement('div');wrap.className='msg-wrap';wrap.id='wn';
-  wrap.innerHTML=`<div class="message"><div class="msg-header"><div class="msg-av ai">✦</div><span class="msg-name">MyAI</span></div><div class="msg-content"><div class="notice warn"><div class="notice-ico">⏳</div><div><strong>Batas sementara tercapai.</strong><br>Pesan kamu tidak hilang dan akan dilanjutkan otomatis.<br><br>Melanjutkan dalam <span class="cd" id="cdt">${secs}</span> detik...<br><br><button class="retry-btn" onclick="retryNow()">↺ Coba Sekarang</button></div></div></div></div>`;
-  msgs.appendChild(wrap);msgs.scrollTop=msgs.scrollHeight;
-  if(rcd)clearInterval(rcd);let s=secs;
-  rcd=setInterval(()=>{s--;const el=document.getElementById('cdt');if(el)el.textContent=s;if(s<=0){clearInterval(rcd);retryNow();}},1000);
-}
-
-function showErr(msg){
-  document.getElementById('ti')?.remove();
-  const msgs=document.getElementById('msgs');
-  const wrap=document.createElement('div');wrap.className='msg-wrap';
-  wrap.innerHTML=`<div class="message"><div class="msg-header"><div class="msg-av ai">✦</div><span class="msg-name">MyAI</span></div><div class="msg-content"><div class="notice err"><div class="notice-ico">⚠️</div><div><strong>Gagal menjawab.</strong><br>${msg}<br><br><button class="retry-btn" onclick="retryNow()">↺ Coba Lagi</button></div></div></div></div>`;
-  msgs.appendChild(wrap);msgs.scrollTop=msgs.scrollHeight;
-}
-
-async function retryNow(){
-  if(rcd){clearInterval(rcd);rcd=null;}
-  document.getElementById('wn')?.remove();
-  if(lastMsgs)await callAPI();
-}
-
-function parseReply(text){
-  const re=/```(\w+)?\n([\s\S]*?)```/g;
-  let html='',last=0,m,cfiles=[];
-  while((m=re.exec(text))!==null){
-    html+=toHtml(text.slice(last,m.index));
-    const lang=m[1]||'code',code=m[2];
-    const bid='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
-    const em={python:'py',javascript:'js',js:'js',html:'html',css:'css',java:'java',cpp:'cpp',c:'c',kotlin:'kt',typescript:'ts',php:'php',sql:'sql',bash:'sh',shell:'sh',xml:'xml',json:'json',dart:'dart'};
-    const fn=`code.${em[lang.toLowerCase()]||'txt'}`;
-    cfiles.push({name:fn,content:code});
-    html+=`<div class="code-wrap"><div class="code-top"><span class="code-lang">${lang}</span><div class="code-acts"><button class="code-btn" onclick="cpCode('${bid}')">Salin</button><button class="code-btn dl" onclick="dlFile('${bid}','${fn}')">⬇ ${fn}</button></div></div><div class="code-body" id="${bid}">${esc(code)}</div></div>`;
-    last=m.index+m[0].length;
-  }
-  html+=toHtml(text.slice(last));
-  if(cfiles.length>=1){const fj=encodeURIComponent(JSON.stringify(cfiles));html+=`<button class="dl-zip" onclick="dlZip('${fj}')">📁 Download ${cfiles.length>1?'Semua File (ZIP)':'sebagai ZIP'}</button>`;}
-  return html;
-}
-
-function toHtml(t){
-  if(!t.trim())return'';
-  t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-  t=t.replace(/\*(.*?)\*/g,'<em>$1</em>');
-  t=t.replace(/`([^`]+)`/g,'<span class="ic">$1</span>');
-  t=t.replace(/^#{1,3} (.+)$/gm,'<strong style="font-size:16px;display:block;margin:12px 0 6px;">$1</strong>');
-  t=t.replace(/^- (.+)$/gm,'<li>$1</li>');
-  t=t.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
-  return t.split(/\n\n+/).map(p=>p.trim()?`<p>${p.replace(/\n/g,'<br>')}</p>`:'').join('');
-}
-function cpCode(id){navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>{});}
-function dlFile(id,n){const b=new Blob([document.getElementById(id).innerText],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();}
-function dlZip(fje){const fs=JSON.parse(decodeURIComponent(fje));const zip=new JSZip();const folder=zip.folder('project');fs.forEach(f=>folder.file(f.name,f.content));zip.generateAsync({type:'blob'}).then(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='project.zip';a.click();});}
-
-async function send(){
-  if(loading)return;
-  if(!getUrl()||!getKey()){showModal();return;}
-  const input=document.getElementById('mi');
-  const text=input.value.trim();
-  if(!text&&imgs.length===0&&files.length===0)return;
-
-  let dh='';
-  imgs.forEach(img=>{dh+=`<img class="msg-img" src="${img.du}">`});
-  files.forEach(f=>{dh+=`<div class="file-chip">📄 ${esc(f.name)}</div>`});
-  if(text)dh+=`<p>${esc(text)}</p>`;
-  addMsg('user',dh);
-
-  let parts=[];
-  if(imgs.length>0)parts.push(`[${imgs.length} gambar dikirim]`);
-  files.forEach(f=>parts.push(`[File: ${f.name}]\n${f.text.substring(0,3000)}`));
-  if(text)parts.push(text);
-  const um=parts.join('\n\n');
-  hist.push({role:'user',content:um});
-  lastMsgs=[...hist];
-
-  const items=document.querySelectorAll('.chat-item');
-  if(items.length>0){const p=text||(imgs.length?'📷 Foto':'📄 File');items[0].textContent=p.substring(0,35)+(p.length>35?'…':'');}
-
-  imgs=[];files=[];
-  document.getElementById('ap').innerHTML='';
-  input.value='';input.style.height='auto';
-  await callAPI();
-}
-
-async function callAPI(){
-  if(loading)return;
-  loading=true;document.getElementById('sb').disabled=true;
-  addTyping();
-  try{
-    const resp=await fetch(`${getUrl()}/api/chat`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-groq-key':getKey()},
-      body:JSON.stringify({messages:hist,system:SYSTEM})
-    });
-    const data=await resp.json();
-    if(resp.status===429){loading=false;document.getElementById('sb').disabled=false;showWarn(60);return;}
-    if(!resp.ok){loading=false;document.getElementById('sb').disabled=false;showErr(data.error||`Error ${resp.status}`);return;}
-    const reply=data.reply||'';
-    document.getElementById('ti')?.remove();
-    hist.push({role:'assistant',content:reply});
-    addMsg('assistant',parseReply(reply));
-  }catch(err){
-    showErr('Tidak dapat terhubung ke backend. Periksa koneksi dan pastikan URL Vercel benar di pengaturan.');
-  }finally{
-    loading=false;document.getElementById('sb').disabled=false;
-  }
-}
-</script>
-</body>
-</html>
+            <div class="chip" onclick="useChip(this)">💻 Buatkan website modern dan download foldernya</div>
+            <div class="chip" onclick="useChip(this)">🎮 Buat game Snake yang keren den
