@@ -228,7 +228,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     <input class="modal-input" type="text" id="urlI" placeholder="https://myai-backend-xxx.vercel.app">
     <span class="modal-label">API Key Groq</span>
     <input class="modal-input" type="password" id="keyI" placeholder="gsk_xxxxxxxxxxxxxxxx">
-    <button class="modal-btn" onclick="saveSetup()">✓ Simpan & Mulai</button>
+    <button class="modal-btn" id="saveBtn" onclick="saveSetup()">✓ Simpan & Mulai</button>
     <p class="modal-hint">Daftar Groq gratis → <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
   </div>
 </div>
@@ -269,7 +269,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
         <div class="sdot off" id="sdot"></div>
         <span class="stxt" id="stxt">Belum dikonfigurasi</span>
       </div>
-      <button class="cfg-btn" onclick="showModal()">⚙️ Pengaturan</button>
+      <button class="cfg-btn" onclick="showModal()" style="margin-bottom:6px;">⚙️ Pengaturan</button>
+      <button class="cfg-btn" onclick="clearAllHistory()" style="color:#ef4444;border-color:rgba(239,68,68,0.3);margin-top:0;">🗑️ Hapus Semua Riwayat</button>
     </div>
   </div>
 
@@ -290,6 +291,4 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
           <h1>Selamat datang!</h1>
           <p>AI cerdas untuk soal sekolah, kuliah, coding, dan apapun yang kamu butuhkan.</p>
           <div class="chips">
-            <div class="chip" onclick="useChip(this)">📐 Jelaskan integral step by step</div>
-            <div class="chip" onclick="useChip(this)">💻 Buatkan website modern dan download foldernya</div>
-            <div class="chip" onclick="useChip(this)">🎮 Buat game Snake yang keren den
+            <div class="chip" onclick="useChip(this)">📐 Jelaskan integral step by step</d
