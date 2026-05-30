@@ -435,38 +435,40 @@ function showLMsg(t,c){
 function loginSuccess(u){
   curUser=u;
   localStorage.setItem('myai_curUser',u);
-  var lp=document.getElementById('loginPage');
-  lp.style.display='none';
-  lp.classList.add('hide');
-  document.getElementById('uname-display').textContent=u;
+  hidePage('loginPage');
+  var nd=document.getElementById('uname-display');
+  if(nd)nd.textContent=u;
   var av=document.getElementById('uavatar');
-  av.textContent=u[0].toUpperCase();
+  if(av)av.textContent=u[0].toUpperCase();
   startApp();
 }
 
 function skipLogin(){
   curUser='tamu';
   localStorage.setItem('myai_curUser','tamu');
-  var lp=document.getElementById('loginPage');
-  lp.style.display='none';
-  lp.classList.add('hide');
-  document.getElementById('uname-display').textContent='Tamu';
-  document.getElementById('uavatar').textContent='T';
+  hidePage('loginPage');
+  var nd=document.getElementById('uname-display');
+  if(nd)nd.textContent='Tamu';
+  var av=document.getElementById('uavatar');
+  if(av)av.textContent='T';
   startApp();
 }
 
 function showLogin(){
-  document.getElementById('app').classList.remove('show');
-  document.getElementById('loginPage').classList.remove('hide');
+  hidePage('app');
+  showPage('loginPage','flex');
   closeSb();
 }
 
 function startApp(){
   var u=getUrl(),k=getKey();
+  hidePage('setupPage');
+  hidePage('loginPage');
   if(!u||!k){
-    document.getElementById('setupPage').classList.remove('hide');
+    showPage('setupPage','flex');
   } else {
-    document.getElementById('app').classList.add('show');
+    showPage('app','flex');
+    document.getElementById('app').style.flexDirection='column';
   }
   loadSessions();updStatus();
 }
@@ -484,18 +486,21 @@ function doSave(){
   localStorage.setItem('myai_url',u);localStorage.setItem('myai_key',k);
   msg.className='smsg ok';msg.textContent='✅ Tersimpan!';msg.style.display='block';
   setTimeout(function(){
-    document.getElementById('setupPage').classList.add('hide');
-    document.getElementById('app').classList.add('show');
+    hidePage('setupPage');
+    showPage('app','flex');
+    document.getElementById('app').style.flexDirection='column';
     updStatus();
   },700);
 }
 
 function showSetup(){
-  document.getElementById('app').classList.remove('show');
-  document.getElementById('setupPage').classList.remove('hide');
+  hidePage('app');
+  showPage('setupPage','flex');
   var u=getUrl(),k=getKey();
-  if(u)document.getElementById('urlI').value=u;
-  if(k)document.getElementById('keyI').value=k;
+  var ui=document.getElementById('urlI');
+  var ki=document.getElementById('keyI');
+  if(u&&ui)ui.value=u;
+  if(k&&ki)ki.value=k;
   closeSb();
 }
 
@@ -507,8 +512,19 @@ function updStatus(){
 
 window.onload=function(){
   var saved=localStorage.getItem('myai_curUser');
-  if(saved){curUser=saved;document.getElementById('loginPage').classList.add('hide');document.getElementById('uname-display').textContent=saved;var av=document.getElementById('uavatar');av.textContent=saved[0].toUpperCase();startApp();}
+  if(saved){
+    curUser=saved;
+    hidePage('loginPage');
+    document.getElementById('uname-display').textContent=saved;
+    var av=document.getElementById('uavatar');
+    if(av)av.textContent=saved[0].toUpperCase();
+    startApp();
+  }
+  attachEvents();
 };
+
+function hidePage(id){var el=document.getElementById(id);if(el)el.style.display='none';}
+function showPage(id,disp){var el=document.getElementById(id);if(el)el.style.display=disp||'flex';}
 
 // ---- SIDEBAR ----
 function openSb(){document.getElementById('sidebar').classList.add('open');document.getElementById('sbOv').classList.add('show');}
