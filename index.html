@@ -12,19 +12,19 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 body{background:var(--bg);color:var(--txt);font-size:15px;}
 
 /* LOGIN PAGE */
-#loginPage{position:fixed;inset:0;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
+#loginPage{position:fixed;inset:0;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
 #loginPage.hide{display:none;}
-.login-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px 28px;width:100%;max-width:380px;}
+.login-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px 28px;width:100%;max-width:380px;position:relative;z-index:1;}
 .login-logo{width:56px;height:56px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;}
 .login-title{text-align:center;font-size:24px;font-weight:700;margin-bottom:6px;}
 .login-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:28px;}
 .login-tabs{display:flex;background:rgba(0,0,0,0.3);border-radius:10px;padding:4px;margin-bottom:22px;gap:4px;}
-.ltab{flex:1;padding:9px;text-align:center;border-radius:7px;cursor:pointer;font-size:14px;font-weight:600;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.ltab{flex:1;padding:11px;text-align:center;border-radius:7px;cursor:pointer;font-size:14px;font-weight:600;color:rgba(255,255,255,0.5);transition:all 0.2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;}
 .ltab.on{background:rgba(255,255,255,0.1);color:#fff;}
 .linput{width:100%;padding:13px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:14px;margin-bottom:12px;outline:none;transition:border-color 0.2s;}
 .linput:focus{border-color:var(--ac);}
 .linput::placeholder{color:rgba(255,255,255,0.3);}
-.lbtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--ac),#0ea5e9);border:none;border-radius:10px;color:#000;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:opacity 0.2s;}
+.lbtn{width:100%;padding:16px;background:linear-gradient(135deg,var(--ac),#0ea5e9);border:none;border-radius:10px;color:#000;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;display:block;position:relative;z-index:10;}
 .lbtn:active{opacity:0.8;}
 .lmsg{display:none;padding:10px;border-radius:8px;font-size:13px;text-align:center;margin-bottom:10px;}
 .lmsg.ok{background:rgba(25,195,125,0.15);color:#19c37d;border:1px solid #19c37d;}
@@ -32,7 +32,7 @@ body{background:var(--bg);color:var(--txt);font-size:15px;}
 .ldivider{text-align:center;color:rgba(255,255,255,0.3);font-size:12px;margin:12px 0;position:relative;}
 .ldivider::before,.ldivider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:rgba(255,255,255,0.1);}
 .ldivider::before{left:0;}.ldivider::after{right:0;}
-.lskip{width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;}
+.lskip{width:100%;padding:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;display:block;position:relative;z-index:10;}
 
 /* SETUP PAGE */
 #setupPage{position:fixed;inset:0;background:#111827;z-index:998;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;}
@@ -233,16 +233,16 @@ body{background:var(--bg);color:var(--txt);font-size:15px;}
     <div class="login-title">MyAI</div>
     <div class="login-sub">Asisten AI cerdas untuk belajar & berkreasi</div>
     <div class="login-tabs">
-      <div class="ltab on" id="tabLogin" onclick="switchTab('login')">Masuk</div>
-      <div class="ltab" id="tabReg" onclick="switchTab('reg')">Daftar</div>
+      <div class="ltab on" id="tabLogin">Masuk</div>
+      <div class="ltab" id="tabReg">Daftar</div>
     </div>
     <div id="lmsg" class="lmsg"></div>
     <input class="linput" type="text" id="luname" placeholder="Username" autocomplete="off">
     <input class="linput" type="password" id="lpwd" placeholder="Password">
     <input class="linput" id="lpwd2" type="password" placeholder="Konfirmasi Password" style="display:none">
-    <button class="lbtn" id="lbtn" onclick="doAuth()">Masuk</button>
+    <button class="lbtn" id="lbtn">Masuk</button>
     <div class="ldivider">atau</div>
-    <button class="lskip" onclick="skipLogin()">Lanjut tanpa akun</button>
+    <button class="lskip" id="lskip">Lanjut tanpa akun</button>
   </div>
 </div>
 
@@ -684,6 +684,31 @@ async function callAPI(){
     switchView('chat');
   }catch(e){showErr('Tidak dapat terhubung ke backend. Periksa koneksi dan URL di pengaturan.');}
   finally{loading=false;document.getElementById('sndbtn').disabled=false;}
+}
+
+// Attach all button events via JS (more reliable on Android)
+function attachEvents(){
+  var tabL=document.getElementById('tabLogin');
+  var tabR=document.getElementById('tabReg');
+  var lbtn=document.getElementById('lbtn');
+  var lskip=document.getElementById('lskip');
+  var sbsave=document.getElementById('sbsave');
+
+  if(tabL){tabL.addEventListener('click',function(){switchTab('login');});}
+  if(tabR){tabR.addEventListener('click',function(){switchTab('reg');});}
+  if(lbtn){lbtn.addEventListener('click',function(){doAuth();});}
+  if(lskip){lskip.addEventListener('click',function(){skipLogin();});}
+  if(sbsave){sbsave.addEventListener('click',function(){doSave();});}
+
+  // Also support Enter key on login inputs
+  var inputs=document.querySelectorAll('.linput');
+  inputs.forEach(function(inp){
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')doAuth();});
+  });
+}
+
+document.addEventListener('DOMContentLoaded', attachEvents);
+window.addEventListener('load', attachEvents);
 }
 </script>
 </body>
