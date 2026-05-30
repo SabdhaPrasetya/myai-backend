@@ -253,7 +253,7 @@ html,body{height:100%;font-family:-apple-system,sans-serif;background:#212121;co
       <button class="menu-btn" id="menuBtn">☰</button>
       <span class="tb-title">MyAI</span>
     </div>
-    <span class="model-tag">Llama 3.3 · Groq</span>
+    <span class="model-tag">DeepSeek R1 · Groq</span>
   </div>
   <div class="tabs">
     <div class="tab on" id="tabChat">💬 Chat</div>
@@ -352,7 +352,7 @@ html,body{height:100%;font-family:-apple-system,sans-serif;background:#212121;co
 
 <script>
 // ===== VARS =====
-var SYSTEM='Kamu adalah MyAI, asisten AI cerdas berbahasa Indonesia.\n\nATURAN WAJIB:\n1. Jawab soal sekolah/kuliah dengan sangat detail dan benar\n2. Saat membuat website/game/aplikasi:\n   - WAJIB buat dalam SATU FILE HTML dengan CSS dan JS embedded di dalamnya\n   - JANGAN pisah ke file style.css atau script.js terpisah\n   - Tampilan HARUS SANGAT BAGUS: gradient, shadow, animasi, warna menarik\n   - Game: canvas animasi, skor, UI keren\n   - Format wajib: ```index.html\n<!DOCTYPE html><html>...<style>CSS DISINI</style>...<script>JS DISINI<\/script></html>\n```\n3. Selalu jawab Bahasa Indonesia\n4. Jawaban harus LENGKAP dan LANGSUNG BISA DIJALANKAN';
+var SYSTEM='Kamu adalah MyAI, asisten AI cerdas berbahasa Indonesia.\n\nATURAN WAJIB - IKUTI DENGAN TEPAT:\n1. Jawab soal sekolah/kuliah dengan sangat detail dan benar\n2. Saat diminta membuat website/game/aplikasi/kode APAPUN:\n   - SELALU tulis kode dalam code block dengan format TEPAT ini:\n   ```index.html\n   KODE DISINI\n   ```\n   - WAJIB dalam SATU FILE HTML dengan <style> dan <script> di dalamnya\n   - JANGAN PERNAH pisah ke file lain\n   - Tampilan HARUS MODERN dan BAGUS: gradient, animasi, warna menarik\n   - Game: canvas, skor, kontrol keyboard, UI profesional\n3. JANGAN tampilkan kode sebagai teks biasa - SELALU gunakan code block\n4. Selalu Bahasa Indonesia\n5. Jawaban LENGKAP dan LANGSUNG BISA DIJALANKAN tanpa modifikasi';
 
 var curUser=null,curTab='login';
 var users={};
@@ -628,7 +628,9 @@ function fvDl(){if(!fvFile)return;var b=new Blob([fvFile.content],{type:'text/pl
 
 // ===== PARSE =====
 function parseR(text){
-  var re=/```([^\n`]+)\n([\s\S]*?)```|```\n([\s\S]*?)```/g;
+  // Normalize: replace ```html\n with ```index.html\n if no filename
+  text = text.replace(/```(html|css|javascript|js|python|java|cpp|c|php)(\n)/gi, function(m,lang,nl){var map={html:'index.html',css:'style.css',javascript:'script.js',js:'script.js',python:'code.py',java:'Main.java',cpp:'main.cpp',c:'main.c',php:'index.php'};return '```'+(map[lang.toLowerCase()]||lang)+nl;});
+  var re=/```([^\n`]+)\n([\s\S]*?)```/g;
   var html='',last=0,m,cfiles=[];
   while((m=re.exec(text))!==null){
     html+=toH(text.slice(last,m.index));
