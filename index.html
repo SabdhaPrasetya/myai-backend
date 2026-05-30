@@ -157,7 +157,7 @@ html,body{height:100%;font-family:-apple-system,sans-serif;background:#212121;co
 /* FILE VIEWER */
 #fvOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:999;align-items:center;justify-content:center;padding:12px;}
 #fvOverlay.show{display:flex;}
-.fvbox{background:#1a1a2e;border:1px solid #3d3d3d;border-radius:12px;width:100%;max-width:660px;max-height:88vh;display:flex;flex-direction:column;}
+.fvbox{background:#1a1a2e;border:1px solid #3d3d3d;border-radius:12px;width:100%;max-width:660px;height:88vh;display:flex;flex-direction:column;overflow:hidden;}
 .fvtop{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#111;border-bottom:1px solid #3d3d3d;border-radius:12px 12px 0 0;}
 .fvname{font-size:13px;color:#19c37d;font-family:monospace;}
 .fvacts{display:flex;gap:6px;align-items:center;}
@@ -216,8 +216,14 @@ html,body{height:100%;font-family:-apple-system,sans-serif;background:#212121;co
     </div>
     <div id="lmsg" class="lmsg"></div>
     <input id="luname" class="linput" type="text" placeholder="Username" autocomplete="off">
-    <input id="lpwd" class="linput" type="password" placeholder="Password">
-    <input id="lpwd2" class="linput" type="password" placeholder="Konfirmasi Password" style="display:none">
+    <div style="position:relative;margin-bottom:10px;">
+      <input id="lpwd" class="linput" type="password" placeholder="Password" style="margin-bottom:0;padding-right:44px;">
+      <button id="eyeBtn" type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:rgba(255,255,255,0.4);padding:4px;">👁️</button>
+    </div>
+    <div style="position:relative;margin-bottom:10px;display:none;" id="pwd2wrap">
+      <input id="lpwd2" class="linput" type="password" placeholder="Konfirmasi Password" style="margin-bottom:0;padding-right:44px;">
+      <button id="eye2Btn" type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:rgba(255,255,255,0.4);padding:4px;">👁️</button>
+    </div>
     <button id="lbtn" class="lbtn">Masuk</button>
     <div class="lor">— atau —</div>
     <button id="lskip" class="lskip">Lanjut tanpa akun</button>
@@ -310,11 +316,16 @@ html,body{height:100%;font-family:-apple-system,sans-serif;background:#212121;co
       <span class="fvname" id="fvname">file</span>
       <div class="fvacts">
         <button class="fvbtn" id="fvCopyBtn">Salin</button>
-        <button class="fvbtn dl" id="fvDlBtn">⬇</button>
+        <button class="fvbtn dl" id="fvDlBtn">⬇ Download</button>
         <button class="fvcls" id="fvClsBtn">✕</button>
       </div>
     </div>
-    <div class="fvbody" id="fvbody"></div>
+    <div style="display:flex;border-bottom:1px solid #3d3d3d;background:#111;flex-shrink:0;">
+      <div id="fvTabCode" onclick="fvSwitch('code')" style="flex:1;padding:9px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;color:#19c37d;border-bottom:2px solid #19c37d;">💻 Kode</div>
+      <div id="fvTabPrev" onclick="fvSwitch('prev')" style="flex:1;padding:9px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;color:#6e6e80;border-bottom:2px solid transparent;">👁️ Preview</div>
+    </div>
+    <div id="fvPaneCode" style="flex:1;overflow-y:auto;padding:14px;font-family:monospace;font-size:12px;line-height:1.6;color:#e2e8f0;white-space:pre;"></div>
+    <div id="fvPanePrev" style="display:none;flex:1;"><iframe id="fvframe" style="width:100%;height:100%;border:none;background:#fff;"></iframe></div>
   </div>
 </div>
 
@@ -411,6 +422,11 @@ function bindAll(){
   document.getElementById('fvCopyBtn').onclick=function(){if(fvFile)navigator.clipboard.writeText(fvFile.content);};
   document.getElementById('fvDlBtn').onclick=fvDl;
   document.getElementById('fvClsBtn').onclick=function(){document.getElementById('fvOverlay').classList.remove('show');};
+  // Eye toggle password
+  var eyeBtn=document.getElementById('eyeBtn');
+  var eye2Btn=document.getElementById('eye2Btn');
+  if(eyeBtn){eyeBtn.onclick=function(){var inp=document.getElementById('lpwd');inp.type=inp.type==='password'?'text':'password';this.textContent=inp.type==='password'?'👁️':'🙈';};}
+  if(eye2Btn){eye2Btn.onclick=function(){var inp=document.getElementById('lpwd2');inp.type=inp.type==='password'?'text':'password';this.textContent=inp.type==='password'?'👁️':'🙈';};}
 
   // Chips
   ['c1','c2','c3','c4','c5','c6'].forEach(function(id){
@@ -424,7 +440,7 @@ function setTab(t){
   curTab=t;
   document.getElementById('tLogin').className='ltab '+(t==='login'?'on':'off');
   document.getElementById('tReg').className='ltab '+(t==='reg'?'on':'off');
-  document.getElementById('lpwd2').style.display=t==='reg'?'block':'none';
+  var pw2=document.getElementById('pwd2wrap');if(pw2)pw2.style.display=t==='reg'?'block':'none';
   document.getElementById('lbtn').textContent=t==='login'?'Masuk':'Daftar Sekarang';
   hideLMsg();
 }
@@ -612,7 +628,7 @@ function fvDl(){if(!fvFile)return;var b=new Blob([fvFile.content],{type:'text/pl
 
 // ===== PARSE =====
 function parseR(text){
-  var re=/```([^\n`]+)\n([\s\S]*?)```/g;
+  var re=/```([^\n`]+)\n([\s\S]*?)```|```\n([\s\S]*?)```/g;
   var html='',last=0,m,cfiles=[];
   while((m=re.exec(text))!==null){
     html+=toH(text.slice(last,m.index));
@@ -625,7 +641,7 @@ function parseR(text){
     var enc=encodeURIComponent(code);
     var isHTML=lang.toLowerCase()==='html'||fname.endsWith('.html');
     var pvBtn=isHTML?'<button class="cbtn pv" onclick="setPreview(decodeURIComponent(\''+enc+'\'),\''+esc(fname)+'\')">▶ Preview</button>':'';
-    html+='<div class="cw"><div class="ct"><div class="ctl"><span class="clang">'+esc(lang)+'</span><span class="cfname" onclick="openFv(\''+esc(fname)+'\',\''+enc+'\')">'+esc(fname)+'</span></div><div class="cacts">'+pvBtn+'<button class="cbtn" onclick="navigator.clipboard.writeText(document.getElementById(\''+bid+'\').innerText)">Salin</button><button class="cbtn dl" onclick="(function(){var b=new Blob([document.getElementById(\''+bid+'\').innerText],{type:\'text/plain\'});var a=document.createElement(\'a\');a.href=URL.createObjectURL(b);a.download=\''+esc(fname)+'\';a.click();})()">⬇</button></div></div><div class="cbody" id="'+bid+'">'+esc(code)+'</div></div>';
+    html+='<div class="cw"><div class="ct"><div class="ctl"><span class="clang">'+esc(lang)+'</span><span class="cfname" onclick="openFvFull(\''+esc(fname)+'\',\''+enc+'\',\''+lang+'\')">'+esc(fname)+'</span></div><div class="cacts">'+pvBtn+'<button class="cbtn" onclick="navigator.clipboard.writeText(document.getElementById(\''+bid+'\').innerText)">Salin</button><button class="cbtn dl" onclick="(function(){var b=new Blob([document.getElementById(\''+bid+'\').innerText],{type:\'text/plain\'});var a=document.createElement(\'a\');a.href=URL.createObjectURL(b);a.download=\''+esc(fname)+'\';a.click();})()">⬇</button></div></div><div class="cbody" id="'+bid+'">'+esc(code)+'</div></div>';
     last=m.index+m[0].length;
   }
   html+=toH(text.slice(last));
@@ -685,6 +701,42 @@ function showErr(msg){
   msgs.appendChild(wrap);msgs.scrollTop=msgs.scrollHeight;
 }
 function retryNow(){if(rcd){clearInterval(rcd);rcd=null;}var w=document.getElementById('wn');if(w)w.remove();if(lastHist)callAPI();}
+
+// ===== FILE VIEWER FULL =====
+function openFvFull(name, enc, lang){
+  var code = decodeURIComponent(enc);
+  fvFile = {name:name, content:code, lang:lang};
+  document.getElementById('fvname').textContent = name;
+  document.getElementById('fvPaneCode').textContent = code;
+  // Auto show preview if HTML
+  var isHTML = (lang&&lang.toLowerCase()==='html') || name.endsWith('.html');
+  if(isHTML){
+    document.getElementById('fvframe').srcdoc = code;
+    fvSwitch('prev');
+  } else {
+    fvSwitch('code');
+  }
+  document.getElementById('fvOverlay').classList.add('show');
+}
+
+function fvSwitch(tab){
+  var codePane = document.getElementById('fvPaneCode');
+  var prevPane = document.getElementById('fvPanePrev');
+  var tabCode = document.getElementById('fvTabCode');
+  var tabPrev = document.getElementById('fvTabPrev');
+  if(tab==='code'){
+    codePane.style.display='block';
+    prevPane.style.display='none';
+    tabCode.style.color='#19c37d';tabCode.style.borderBottom='2px solid #19c37d';
+    tabPrev.style.color='#6e6e80';tabPrev.style.borderBottom='2px solid transparent';
+  } else {
+    codePane.style.display='none';
+    prevPane.style.display='flex';prevPane.style.flex='1';
+    tabPrev.style.color='#19c37d';tabPrev.style.borderBottom='2px solid #19c37d';
+    tabCode.style.color='#6e6e80';tabCode.style.borderBottom='2px solid transparent';
+    if(fvFile){document.getElementById('fvframe').srcdoc=fvFile.content;}
+  }
+}
 
 // ===== SEND =====
 function send(){
